@@ -1,23 +1,43 @@
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.sql.*;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class VentanaPrincipal extends JFrame {
     private JTabbedPane tabbedPane1;
     private JPanel panel1;
-    private JTextField txtNombre;
-    private JTextField txtApellido;
-    private JTextField txtTelefono;
-    private JTextField txtCorreo;
-    private JButton buscarButton;
-    private JTextField txtBuscar;
-    private JTable table1;
-    private JButton registrarButton;
-    private JButton eliminarRegistroButton;
-    private JButton modificarButton;
+
+    private JTextField txtIdDueno;
+    private JTextField txtNombreDueno;
+    private JTextField txtApellidoDueno;
+    private JTextField txtDireccionDueno;
+    private JTextField txtTelefonoDueno;
+    private JButton btnRegistrarDueno;
+
+    private JTextField txtIdFilial;
+    private JTextField txtIdDuenoFilial;
+    private JTextField txtNumeroFilial;
+    private JTextField txtUbicacionFilial;
+    private JButton btnRegistrarFilial;
+
+    private JTextField txtIdCuotaCondominal;
+    private JTextField txtIdFilialCuotaCondominal;
+    private JTextField txtFechaPagoCuotaCondominal;
+    private JTextField txtMontoCuotaCondominal;
+    private JButton btnRegistrarCuotaCondominal;
+
+    private JTextField txtIdAcceso;
+    private JTextField txtIdFilialAcceso;
+    private JTextField txtFechaIngresoAcceso;
+    private JTextField txtHoraIngresoAcceso;
+    private JButton btnRegistrarAcceso;
+
+    private JTextField txtIdCuotaExtraordinaria;
+    private JTextField txtIdFilialCuotaExtraordinaria;
+    private JTextField txtFechaPagoCuotaExtraordinaria;
+    private JTextField txtMontoCuotaExtraordinaria;
+    private JButton btnRegistrarCuotaExtraordinaria;
 
     public static void main(String[] args) {
         JFrame frame = new JFrame("Sistema de Control de Condominios");
@@ -32,101 +52,6 @@ public class VentanaPrincipal extends JFrame {
     public VentanaPrincipal() {
         initComponents();
         Conexion();
-
-        registrarButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String nombre = txtNombre.getText();
-                String apellido = txtApellido.getText();
-                String telefono = txtTelefono.getText();
-                String correo = txtCorreo.getText();
-
-                try {
-                    CallableStatement cst = con.prepareCall("{call insertar_propietario(?, ?, ?, ?)}");
-                    cst.setString(1, nombre);
-                    cst.setString(2, apellido);
-                    cst.setString(3, telefono);
-                    cst.setString(4, correo);
-                    cst.executeUpdate();
-                    JOptionPane.showMessageDialog(null, "Propietario Registrado");
-
-                    txtNombre.setText("");
-                    txtApellido.setText("");
-                    txtTelefono.setText("");
-                    txtCorreo.setText("");
-                    txtNombre.requestFocus();
-                } catch (SQLException e1) {
-                    e1.printStackTrace();
-                }
-            }
-        });
-
-        buscarButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    String idPropietario = txtBuscar.getText();
-                    pst = con.prepareStatement("SELECT nombre, apellido, telefono, correo FROM propietarios WHERE id_propietario = ?");
-                    pst.setString(1, idPropietario);
-                    ResultSet rs = pst.executeQuery();
-
-                    if (rs.next()) {
-                        String nombre = rs.getString(1);
-                        String apellido = rs.getString(2);
-                        String telefono = rs.getString(3);
-                        String correo = rs.getString(4);
-
-                        JOptionPane.showMessageDialog(null, "  Nombre: " + nombre + "  Apellido: " + apellido + "  Teléfono: " + telefono + "  Correo: " + correo);
-                    } else {
-                        JOptionPane.showMessageDialog(null, "Propietario no encontrado");
-                    }
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
-            }
-        });
-
-        eliminarRegistroButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String idPropietario = txtBuscar.getText();
-
-                try {
-                    CallableStatement cst = con.prepareCall("{call borrar_propietario(?)}");
-                    cst.setInt(1, Integer.parseInt(idPropietario));
-                    cst.executeUpdate();
-
-                    JOptionPane.showMessageDialog(null, "Propietario Eliminado exitosamente");
-                } catch (SQLException e1) {
-                    e1.printStackTrace();
-                }
-            }
-        });
-
-        modificarButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String idPropietario = txtBuscar.getText();
-                String nombre = txtNombre.getText();
-                String apellido = txtApellido.getText();
-                String telefono = txtTelefono.getText();
-                String correo = txtCorreo.getText();
-
-                try {
-                    CallableStatement cst = con.prepareCall("{call modificar_propietario(?, ?, ?, ?, ?)}");
-                    cst.setInt(1, Integer.parseInt(idPropietario));
-                    cst.setString(2, nombre);
-                    cst.setString(3, apellido);
-                    cst.setString(4, telefono);
-                    cst.setString(5, correo);
-                    cst.executeUpdate();
-
-                    JOptionPane.showMessageDialog(null, "Propietario Modificado exitosamente");
-                } catch (SQLException e1) {
-                    e1.printStackTrace();
-                }
-            }
-        });
     }
 
     private void initComponents() {
@@ -136,54 +61,166 @@ public class VentanaPrincipal extends JFrame {
         tabbedPane1 = new JTabbedPane();
         panel1.add(tabbedPane1, BorderLayout.CENTER);
 
-        JPanel panelRegistro = new JPanel(new GridLayout(0, 2));
-        tabbedPane1.addTab("Registro", panelRegistro);
 
-        panelRegistro.add(new JLabel("Nombre:"));
-        txtNombre = new JTextField();
-        panelRegistro.add(txtNombre);
+        // Pestaña para SP_DUEÑOS
+        JPanel panelDuenos = new JPanel(new GridLayout(0, 2));
+        tabbedPane1.addTab("Dueños", panelDuenos);
 
-        panelRegistro.add(new JLabel("Apellido:"));
-        txtApellido = new JTextField();
-        panelRegistro.add(txtApellido);
+        panelDuenos.add(new JLabel("ID Dueño:"));
+        txtIdDueno = new JTextField();
+        panelDuenos.add(txtIdDueno);
 
-        panelRegistro.add(new JLabel("Teléfono:"));
-        txtTelefono = new JTextField();
-        panelRegistro.add(txtTelefono);
+        panelDuenos.add(new JLabel("Nombre:"));
+        txtNombreDueno = new JTextField();
+        panelDuenos.add(txtNombreDueno);
 
-        panelRegistro.add(new JLabel("Correo:"));
-        txtCorreo = new JTextField();
-        panelRegistro.add(txtCorreo);
+        panelDuenos.add(new JLabel("Apellido:"));
+        txtApellidoDueno = new JTextField();
+        panelDuenos.add(txtApellidoDueno);
 
-        registrarButton = new JButton("Registrar");
-        panelRegistro.add(registrarButton);
+        panelDuenos.add(new JLabel("Dirección:"));
+        txtDireccionDueno = new JTextField();
+        panelDuenos.add(txtDireccionDueno);
 
-        modificarButton = new JButton("Modificar");
-        panelRegistro.add(modificarButton);
+        panelDuenos.add(new JLabel("Teléfono:"));
+        txtTelefonoDueno = new JTextField();
+        panelDuenos.add(txtTelefonoDueno);
 
-        JPanel panelBusqueda = new JPanel(new BorderLayout());
-        tabbedPane1.addTab("Buscar/Eliminar", panelBusqueda);
+        btnRegistrarDueno = new JButton("Registrar Dueño");
+        panelDuenos.add(btnRegistrarDueno);
 
-        JPanel panelBusquedaForm = new JPanel(new GridLayout(0, 2));
-        panelBusqueda.add(panelBusquedaForm, BorderLayout.NORTH);
+        btnRegistrarDueno.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Obtener los valores de los campos de texto
+                int idDueno = Integer.parseInt(txtIdDueno.getText());
+                String nombre = txtNombreDueno.getText();
+                String apellido = txtApellidoDueno.getText();
+                String direccion = txtDireccionDueno.getText();
+                String telefono = txtTelefonoDueno.getText();
 
-        panelBusquedaForm.add(new JLabel("ID Propietario:"));
-        txtBuscar = new JTextField();
-        panelBusquedaForm.add(txtBuscar);
+                try {
+                    // Preparar la declaración SQL
+                    String sql = "INSERT INTO DUEÑOS (ID_DUEÑO, NOMBRE, APELLIDO, DIRECCIÓN, TELEFONO) VALUES (?, ?, ?, ?, ?)";
+                    pst = con.prepareStatement(sql);
 
-        buscarButton = new JButton("Buscar");
-        panelBusquedaForm.add(buscarButton);
+                    // Establecer los parámetros de la declaración SQL
+                    pst.setInt(1, idDueno);
+                    pst.setString(2, nombre);
+                    pst.setString(3, apellido);
+                    pst.setString(4, direccion);
+                    pst.setString(5, telefono);
 
-        eliminarRegistroButton = new JButton("Eliminar");
-        panelBusquedaForm.add(eliminarRegistroButton);
+                    // Ejecutar la declaración SQL
+                    pst.executeUpdate();
 
-        table1 = new JTable();
-        panelBusqueda.add(new JScrollPane(table1), BorderLayout.CENTER);
+                    // Notificar al usuario que el registro se ha completado
+                    JOptionPane.showMessageDialog(null, "Registro de dueño exitoso");
+
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "Error al registrar dueño");
+                }
+            }
+        });
+
+        // Pestaña para SP_FILIALES
+        JPanel panelFiliales = new JPanel(new GridLayout(0, 2));
+        tabbedPane1.addTab("Filiales", panelFiliales);
+
+        panelFiliales.add(new JLabel("ID Filial:"));
+        txtIdFilial = new JTextField();
+        panelFiliales.add(txtIdFilial);
+
+        panelFiliales.add(new JLabel("ID Dueño:"));
+        txtIdDuenoFilial = new JTextField();
+        panelFiliales.add(txtIdDuenoFilial);
+
+        panelFiliales.add(new JLabel("Número Filial:"));
+        txtNumeroFilial = new JTextField();
+        panelFiliales.add(txtNumeroFilial);
+
+        panelFiliales.add(new JLabel("Ubicación:"));
+        txtUbicacionFilial = new JTextField();
+        panelFiliales.add(txtUbicacionFilial);
+
+        btnRegistrarFilial = new JButton("Registrar Filial");
+        panelFiliales.add(btnRegistrarFilial);
+
+        // Pestaña para SP_CUOTAS_CONDOMINALES
+        JPanel panelCuotasCondominales = new JPanel(new GridLayout(0, 2));
+        tabbedPane1.addTab("Cuotas Condominales", panelCuotasCondominales);
+
+        panelCuotasCondominales.add(new JLabel("ID Cuota:"));
+        txtIdCuotaCondominal = new JTextField();
+        panelCuotasCondominales.add(txtIdCuotaCondominal);
+
+        panelCuotasCondominales.add(new JLabel("ID Filial:"));
+        txtIdFilialCuotaCondominal = new JTextField();
+        panelCuotasCondominales.add(txtIdFilialCuotaCondominal);
+
+        panelCuotasCondominales.add(new JLabel("Fecha Pago:"));
+        txtFechaPagoCuotaCondominal = new JTextField();
+        panelCuotasCondominales.add(txtFechaPagoCuotaCondominal);
+
+        panelCuotasCondominales.add(new JLabel("Monto:"));
+        txtMontoCuotaCondominal = new JTextField();
+        panelCuotasCondominales.add(txtMontoCuotaCondominal);
+
+        btnRegistrarCuotaCondominal = new JButton("Registrar Cuota Condominal");
+        panelCuotasCondominales.add(btnRegistrarCuotaCondominal);
+
+        // Pestaña para SP_ACCESOS
+        JPanel panelAccesos = new JPanel(new GridLayout(0, 2));
+        tabbedPane1.addTab("Accesos", panelAccesos);
+
+        panelAccesos.add(new JLabel("ID Acceso:"));
+        txtIdAcceso = new JTextField();
+        panelAccesos.add(txtIdAcceso);
+
+        panelAccesos.add(new JLabel("ID Filial:"));
+        txtIdFilialAcceso = new JTextField();
+        panelAccesos.add(txtIdFilialAcceso);
+
+        panelAccesos.add(new JLabel("Fecha Ingreso:"));
+        txtFechaIngresoAcceso = new JTextField();
+        panelAccesos.add(txtFechaIngresoAcceso);
+
+        panelAccesos.add(new JLabel("Hora Ingreso:"));
+        txtHoraIngresoAcceso = new JTextField();
+        panelAccesos.add(txtHoraIngresoAcceso);
+
+        btnRegistrarAcceso = new JButton("Registrar Acceso");
+        panelAccesos.add(btnRegistrarAcceso);
+
+        // Pestaña para SP_CUOTAS_EXTRAORDINARIAS
+        JPanel panelCuotasExtraordinarias = new JPanel(new GridLayout(0, 2));
+        tabbedPane1.addTab("Cuotas Extraordinarias", panelCuotasExtraordinarias);
+
+        panelCuotasExtraordinarias.add(new JLabel("ID Cuota Extra:"));
+        txtIdCuotaExtraordinaria = new JTextField();
+        panelCuotasExtraordinarias.add(txtIdCuotaExtraordinaria);
+
+        panelCuotasExtraordinarias.add(new JLabel("ID Filial:"));
+        txtIdFilialCuotaExtraordinaria = new JTextField();
+        panelCuotasExtraordinarias.add(txtIdFilialCuotaExtraordinaria);
+
+        panelCuotasExtraordinarias.add(new JLabel("Fecha Pago:"));
+        txtFechaPagoCuotaExtraordinaria = new JTextField();
+        panelCuotasExtraordinarias.add(txtFechaPagoCuotaExtraordinaria);
+
+        panelCuotasExtraordinarias.add(new JLabel("Monto:"));
+        txtMontoCuotaExtraordinaria = new JTextField();
+        panelCuotasExtraordinarias.add(txtMontoCuotaExtraordinaria);
+
+        btnRegistrarCuotaExtraordinaria = new JButton("Registrar Cuota Extraordinaria");
+        panelCuotasExtraordinarias.add(btnRegistrarCuotaExtraordinaria);
     }
+
 
     Connection con;
     PreparedStatement pst;
-    
+
     public void Conexion() {
         try {
             Class.forName("oracle.jdbc.driver.OracleDriver");
