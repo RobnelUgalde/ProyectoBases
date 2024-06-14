@@ -99,7 +99,7 @@ public class VentanaPrincipal extends JFrame {
         btnRegistrarDueno = new JButton("Registrar Dueño");
         panelDuenos.add(btnRegistrarDueno);
 
-// Inicializar el botón btnRegistrarCuotaCondominal
+// Inicializar el botón
         btnActualizarDueno = new JButton("Actualizar Dueño");
         panelDuenos.add(btnActualizarDueno); // Asegúrate de que esté inicializado antes de agregar el ActionListener
 
@@ -285,8 +285,8 @@ public class VentanaPrincipal extends JFrame {
         panelCuotasCondominales.add(txtMontoCuotaCondominal);
 
         // Inicializar el botón btnRegistrarCuotaCondominal
-        btnRegistrarCuotaCondominal = new JButton("Registrar Cuota Condominal");
-        panelCuotasCondominales.add(btnRegistrarCuotaCondominal); // Asegúrate de que esté inicializado antes de agregar el ActionListener
+         btnRegistrarCuotaCondominal = new JButton("Registrar Cuota Condominal");
+        //panelCuotasCondominales.add(btnRegistrarCuotaCondominal); // Asegúrate de que esté inicializado antes de agregar el ActionListener
 
         // ActionListener para el botón Registrar Cuota Condominal
         btnRegistrarCuotaCondominal.addActionListener(new ActionListener() {
