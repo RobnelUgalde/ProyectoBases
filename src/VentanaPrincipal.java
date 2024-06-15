@@ -117,28 +117,23 @@ public class VentanaPrincipal extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    // Obtener los valores de los campos de texto
                     int idDueno = Integer.parseInt(txtIdDueno.getText());
                     String nombre = txtNombreDueno.getText();
                     String apellido = txtApellidoDueno.getText();
                     String direccion = txtDireccionDueno.getText();
                     String telefono = txtTelefonoDueno.getText();
 
-                    // Preparar la declaración SQL
-                    String sql = "INSERT INTO DUEÑOS (ID_DUEÑO, NOMBRE, APELLIDO, DIRECCIÓN, TELEFONO) VALUES (?, ?, ?, ?, ?)";
-                    pst = con.prepareStatement(sql);
+                    // Llamar al procedimiento almacenado
+                    CallableStatement cst = con.prepareCall("{call SP_DUEÑOS(?, ?, ?, ?, ?, ?)}");
+                    cst.setString(1, "INSERT");
+                    cst.setInt(2, idDueno);
+                    cst.setString(3, nombre);
+                    cst.setString(4, apellido);
+                    cst.setString(5, direccion);
+                    cst.setString(6, telefono);
 
-                    // Establecer los parámetros de la declaración SQL
-                    pst.setInt(1, idDueno);
-                    pst.setString(2, nombre);
-                    pst.setString(3, apellido);
-                    pst.setString(4, direccion);
-                    pst.setString(5, telefono);
+                    cst.execute();
 
-                    // Ejecutar la declaración SQL
-                    pst.executeUpdate();
-
-                    // Notificar al usuario que el registro se ha completado
                     JOptionPane.showMessageDialog(null, "Registro de dueño exitoso");
 
                 } catch (SQLException ex) {
@@ -153,28 +148,23 @@ public class VentanaPrincipal extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    // Obtener los valores de los campos de texto
                     int idDueno = Integer.parseInt(txtIdDueno.getText());
                     String nombre = txtNombreDueno.getText();
                     String apellido = txtApellidoDueno.getText();
                     String direccion = txtDireccionDueno.getText();
                     String telefono = txtTelefonoDueno.getText();
 
-                    // Preparar la declaración SQL
-                    String sql = "UPDATE DUEÑOS SET NOMBRE = ?, APELLIDO = ?, DIRECCIÓN = ?, TELEFONO = ? WHERE ID_DUEÑO = ?";
-                    pst = con.prepareStatement(sql);
+                    // Llamar al procedimiento almacenado
+                    CallableStatement cst = con.prepareCall("{call SP_DUEÑOS(?, ?, ?, ?, ?, ?)}");
+                    cst.setString(1, "UPDATE");
+                    cst.setInt(2, idDueno);
+                    cst.setString(3, nombre);
+                    cst.setString(4, apellido);
+                    cst.setString(5, direccion);
+                    cst.setString(6, telefono);
 
-                    // Establecer los parámetros de la declaración SQL
-                    pst.setString(1, nombre);
-                    pst.setString(2, apellido);
-                    pst.setString(3, direccion);
-                    pst.setString(4, telefono);
-                    pst.setInt(5, idDueno);
+                    cst.execute();
 
-                    // Ejecutar la declaración SQL
-                    pst.executeUpdate();
-
-                    // Notificar al usuario que la actualización se ha completado
                     JOptionPane.showMessageDialog(null, "Actualización de dueño exitosa");
 
                 } catch (SQLException ex) {
@@ -189,20 +179,15 @@ public class VentanaPrincipal extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    // Obtener el ID del dueño a eliminar
                     int idDueno = Integer.parseInt(txtIdDueno.getText());
 
-                    // Preparar la declaración SQL
-                    String sql = "DELETE FROM DUEÑOS WHERE ID_DUEÑO = ?";
-                    pst = con.prepareStatement(sql);
+                    // Llamar al procedimiento almacenado
+                    CallableStatement cst = con.prepareCall("{call SP_DUEÑOS(?, ?, NULL, NULL, NULL, NULL)}");
+                    cst.setString(1, "DELETE");
+                    cst.setInt(2, idDueno);
 
-                    // Establecer el parámetro de la declaración SQL
-                    pst.setInt(1, idDueno);
+                    cst.execute();
 
-                    // Ejecutar la declaración SQL
-                    pst.executeUpdate();
-
-                    // Notificar al usuario que la eliminación se ha completado
                     JOptionPane.showMessageDialog(null, "Eliminación de dueño exitosa");
 
                 } catch (SQLException ex) {
@@ -240,30 +225,54 @@ public class VentanaPrincipal extends JFrame {
         btnEliminarFilial = new JButton("Eliminar Filial");
         panelFiliales.add(btnEliminarFilial);
 
-        btnActualizarFilial.addActionListener(new ActionListener() {
+        btnRegistrarFilial.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    // Obtener los valores de los campos de texto
                     int idFilial = Integer.parseInt(txtIdFilial.getText());
                     int idDueno = Integer.parseInt(txtIdDuenoFilial.getText());
                     int numeroFilial = Integer.parseInt(txtNumeroFilial.getText());
                     String ubicacion = txtUbicacionFilial.getText();
 
-                    // Preparar la declaración SQL
-                    String sql = "UPDATE FILIALES SET ID_DUEÑO = ?, NUMERO_FILIAL = ?, UBICACIÓN = ? WHERE ID_FILIAL = ?";
-                    pst = con.prepareStatement(sql);
+                    // Llamar al procedimiento almacenado
+                    CallableStatement cst = con.prepareCall("{call SP_FILIALES(?, ?, ?, ?, ?)}");
+                    cst.setString(1, "INSERT");
+                    cst.setInt(2, idFilial);
+                    cst.setInt(3, idDueno);
+                    cst.setInt(4, numeroFilial);
+                    cst.setString(5, ubicacion);
 
-                    // Establecer los parámetros de la declaración SQL
-                    pst.setInt(1, idDueno);
-                    pst.setInt(2, numeroFilial);
-                    pst.setString(3, ubicacion);
-                    pst.setInt(4, idFilial);
+                    cst.execute();
 
-                    // Ejecutar la declaración SQL
-                    pst.executeUpdate();
+                    JOptionPane.showMessageDialog(null, "Registro de filial exitoso");
 
-                    // Notificar al usuario que la actualización se ha completado
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "Error al registrar filial");
+                }
+            }
+        });
+
+// ActionListener para el botón Actualizar Filial
+        btnActualizarFilial.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    int idFilial = Integer.parseInt(txtIdFilial.getText());
+                    int idDueno = Integer.parseInt(txtIdDuenoFilial.getText());
+                    int numeroFilial = Integer.parseInt(txtNumeroFilial.getText());
+                    String ubicacion = txtUbicacionFilial.getText();
+
+                    // Llamar al procedimiento almacenado
+                    CallableStatement cst = con.prepareCall("{call SP_FILIALES(?, ?, ?, ?, ?)}");
+                    cst.setString(1, "UPDATE");
+                    cst.setInt(2, idFilial);
+                    cst.setInt(3, idDueno);
+                    cst.setInt(4, numeroFilial);
+                    cst.setString(5, ubicacion);
+
+                    cst.execute();
+
                     JOptionPane.showMessageDialog(null, "Actualización de filial exitosa");
 
                 } catch (SQLException ex) {
@@ -273,63 +282,25 @@ public class VentanaPrincipal extends JFrame {
             }
         });
 
+// ActionListener para el botón Eliminar Filial
         btnEliminarFilial.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    // Obtener el ID de la filial desde el campo correspondiente
                     int idFilial = Integer.parseInt(txtIdFilial.getText());
 
-                    // Preparar la declaración SQL
-                    String sql = "DELETE FROM FILIALES WHERE ID_FILIAL = ?";
-                    pst = con.prepareStatement(sql);
+                    // Llamar al procedimiento almacenado
+                    CallableStatement cst = con.prepareCall("{call SP_FILIALES(?, ?, NULL, NULL, NULL)}");
+                    cst.setString(1, "DELETE");
+                    cst.setInt(2, idFilial);
 
-                    // Establecer el parámetro de la declaración SQL
-                    pst.setInt(1, idFilial);
+                    cst.execute();
 
-                    // Ejecutar la declaración SQL
-                    pst.executeUpdate();
-
-                    // Notificar al usuario que la eliminación se ha completado
                     JOptionPane.showMessageDialog(null, "Eliminación de filial exitosa");
 
                 } catch (SQLException ex) {
                     ex.printStackTrace();
                     JOptionPane.showMessageDialog(null, "Error al eliminar filial");
-                }
-            }
-        });
-
-        // ActionListener para el botón Registrar Filial
-        btnRegistrarFilial.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    // Obtener los valores de los campos de texto
-                    int idFilial = Integer.parseInt(txtIdFilial.getText());
-                    int idDueno = Integer.parseInt(txtIdDuenoFilial.getText());
-                    int numeroFilial = Integer.parseInt(txtNumeroFilial.getText());
-                    String ubicacion = txtUbicacionFilial.getText();
-
-                    // Preparar la declaración SQL
-                    String sql = "INSERT INTO FILIALES (ID_FILIAL, ID_DUEÑO, NUMERO_FILIAL, UBICACIÓN) VALUES (?, ?, ?, ?)";
-                    pst = con.prepareStatement(sql);
-
-                    // Establecer los parámetros de la declaración SQL
-                    pst.setInt(1, idFilial);
-                    pst.setInt(2, idDueno);
-                    pst.setInt(3, numeroFilial);
-                    pst.setString(4, ubicacion);
-
-                    // Ejecutar la declaración SQL
-                    pst.executeUpdate();
-
-                    // Notificar al usuario que el registro se ha completado
-                    JOptionPane.showMessageDialog(null, "Registro de filial exitoso");
-
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                    JOptionPane.showMessageDialog(null, "Error al registrar filial");
                 }
             }
         });
@@ -368,7 +339,6 @@ public class VentanaPrincipal extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    // Obtener los valores de los campos de texto
                     int idCuota = Integer.parseInt(txtIdCuotaCondominal.getText());
                     int idFilial = Integer.parseInt(txtIdFilialCuotaCondominal.getText());
                     String fechaPago = txtFechaPagoCuotaCondominal.getText();
@@ -379,20 +349,16 @@ public class VentanaPrincipal extends JFrame {
                     java.util.Date parsedDate = sdf.parse(fechaPago);
                     java.sql.Date sqlFechaPago = new java.sql.Date(parsedDate.getTime());
 
-                    // Preparar la declaración SQL
-                    String sql = "INSERT INTO CUOTAS_CONDOMINALES (ID_CUOTA, ID_FILIAL, FECHA_PAGO, MONTO) VALUES (?, ?, ?, ?)";
-                    pst = con.prepareStatement(sql);
+                    // Llamar al procedimiento almacenado
+                    CallableStatement cst = con.prepareCall("{call SP_CUOTAS_CONDOMINALES(?, ?, ?, ?, ?)}");
+                    cst.setString(1, "INSERT");
+                    cst.setInt(2, idCuota);
+                    cst.setInt(3, idFilial);
+                    cst.setDate(4, sqlFechaPago);
+                    cst.setDouble(5, monto);
 
-                    // Establecer los parámetros de la declaración SQL
-                    pst.setInt(1, idCuota);
-                    pst.setInt(2, idFilial);
-                    pst.setDate(3, sqlFechaPago); // Usar java.sql.Date
-                    pst.setDouble(4, monto);
+                    cst.execute();
 
-                    // Ejecutar la declaración SQL
-                    pst.executeUpdate();
-
-                    // Notificar al usuario que el registro se ha completado
                     JOptionPane.showMessageDialog(null, "Registro de cuota condominal exitoso");
 
                 } catch (SQLException ex) {
@@ -405,11 +371,11 @@ public class VentanaPrincipal extends JFrame {
             }
         });
 
+// ActionListener para el botón Actualizar Cuota Condominal
         btnActualizarCuotaCondominal.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    // Obtener los nuevos valores de los campos de texto
                     int idCuota = Integer.parseInt(txtIdCuotaCondominal.getText());
                     int idFilial = Integer.parseInt(txtIdFilialCuotaCondominal.getText());
                     String fechaPago = txtFechaPagoCuotaCondominal.getText();
@@ -420,18 +386,15 @@ public class VentanaPrincipal extends JFrame {
                     java.util.Date parsedDate = sdf.parse(fechaPago);
                     java.sql.Date sqlFechaPago = new java.sql.Date(parsedDate.getTime());
 
-                    // Preparar la declaración SQL de actualización
-                    String sql = "UPDATE CUOTAS_CONDOMINALES SET ID_FILIAL = ?, FECHA_PAGO = ?, MONTO = ? WHERE ID_CUOTA = ?";
-                    pst = con.prepareStatement(sql);
+                    // Llamar al procedimiento almacenado
+                    CallableStatement cst = con.prepareCall("{call SP_CUOTAS_CONDOMINALES(?, ?, ?, ?, ?)}");
+                    cst.setString(1, "UPDATE");
+                    cst.setInt(2, idCuota);
+                    cst.setInt(3, idFilial);
+                    cst.setDate(4, sqlFechaPago);
+                    cst.setDouble(5, monto);
 
-                    // Establecer los parámetros de la declaración SQL
-                    pst.setInt(1, idFilial);
-                    pst.setDate(2, sqlFechaPago);
-                    pst.setDouble(3, monto);
-                    pst.setInt(4, idCuota);
-
-                    // Ejecutar la declaración SQL
-                    int rowsAffected = pst.executeUpdate();
+                    int rowsAffected = cst.executeUpdate();
 
                     // Verificar si se actualizó correctamente
                     if (rowsAffected > 0) {
@@ -450,22 +413,19 @@ public class VentanaPrincipal extends JFrame {
             }
         });
 
+// ActionListener para el botón Eliminar Cuota Condominal
         btnEliminarCuotaCondominal.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    // Obtener el ID de cuota a eliminar
                     int idCuota = Integer.parseInt(txtIdCuotaCondominal.getText());
 
-                    // Preparar la declaración SQL de eliminación
-                    String sql = "DELETE FROM CUOTAS_CONDOMINALES WHERE ID_CUOTA = ?";
-                    pst = con.prepareStatement(sql);
+                    // Llamar al procedimiento almacenado
+                    CallableStatement cst = con.prepareCall("{call SP_CUOTAS_CONDOMINALES(?, ?, NULL, NULL, NULL)}");
+                    cst.setString(1, "DELETE");
+                    cst.setInt(2, idCuota);
 
-                    // Establecer el parámetro de la declaración SQL
-                    pst.setInt(1, idCuota);
-
-                    // Ejecutar la declaración SQL
-                    int rowsAffected = pst.executeUpdate();
+                    int rowsAffected = cst.executeUpdate();
 
                     // Verificar si se eliminó correctamente
                     if (rowsAffected > 0) {
@@ -741,7 +701,6 @@ public class VentanaPrincipal extends JFrame {
 
     Connection con;
     PreparedStatement pst;
-
     public void Conexion() {
         try {
             Class.forName("oracle.jdbc.driver.OracleDriver");
