@@ -3,11 +3,6 @@ import java.awt.*;
 import java.sql.*;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.format.DateTimeParseException;
 
 public class VentanaPrincipal extends JFrame {
     private JTabbedPane tabbedPane1;
@@ -104,7 +99,7 @@ public class VentanaPrincipal extends JFrame {
         btnRegistrarDueno = new JButton("Registrar Dueño");
         panelDuenos.add(btnRegistrarDueno);
 
-// Inicializar el botón
+// Inicializar el botón btnRegistrarCuotaCondominal
         btnActualizarDueno = new JButton("Actualizar Dueño");
         panelDuenos.add(btnActualizarDueno); // Asegúrate de que esté inicializado antes de agregar el ActionListener
 
@@ -234,71 +229,6 @@ public class VentanaPrincipal extends JFrame {
 
         btnRegistrarFilial = new JButton("Registrar Filial");
         panelFiliales.add(btnRegistrarFilial);
-        btnActualizarFilial = new JButton("Actualizar Filial");
-        panelFiliales.add(btnActualizarFilial);
-
-        btnEliminarFilial = new JButton("Eliminar Filial");
-        panelFiliales.add(btnEliminarFilial);
-
-        btnActualizarFilial.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    // Obtener los valores de los campos de texto
-                    int idFilial = Integer.parseInt(txtIdFilial.getText());
-                    int idDueno = Integer.parseInt(txtIdDuenoFilial.getText());
-                    int numeroFilial = Integer.parseInt(txtNumeroFilial.getText());
-                    String ubicacion = txtUbicacionFilial.getText();
-
-                    // Preparar la declaración SQL
-                    String sql = "UPDATE FILIALES SET ID_DUEÑO = ?, NUMERO_FILIAL = ?, UBICACIÓN = ? WHERE ID_FILIAL = ?";
-                    pst = con.prepareStatement(sql);
-
-                    // Establecer los parámetros de la declaración SQL
-                    pst.setInt(1, idDueno);
-                    pst.setInt(2, numeroFilial);
-                    pst.setString(3, ubicacion);
-                    pst.setInt(4, idFilial);
-
-                    // Ejecutar la declaración SQL
-                    pst.executeUpdate();
-
-                    // Notificar al usuario que la actualización se ha completado
-                    JOptionPane.showMessageDialog(null, "Actualización de filial exitosa");
-
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                    JOptionPane.showMessageDialog(null, "Error al actualizar filial");
-                }
-            }
-        });
-
-        btnEliminarFilial.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    // Obtener el ID de la filial desde el campo correspondiente
-                    int idFilial = Integer.parseInt(txtIdFilial.getText());
-
-                    // Preparar la declaración SQL
-                    String sql = "DELETE FROM FILIALES WHERE ID_FILIAL = ?";
-                    pst = con.prepareStatement(sql);
-
-                    // Establecer el parámetro de la declaración SQL
-                    pst.setInt(1, idFilial);
-
-                    // Ejecutar la declaración SQL
-                    pst.executeUpdate();
-
-                    // Notificar al usuario que la eliminación se ha completado
-                    JOptionPane.showMessageDialog(null, "Eliminación de filial exitosa");
-
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                    JOptionPane.showMessageDialog(null, "Error al eliminar filial");
-                }
-            }
-        });
 
         // ActionListener para el botón Registrar Filial
         btnRegistrarFilial.addActionListener(new ActionListener() {
@@ -354,14 +284,9 @@ public class VentanaPrincipal extends JFrame {
         txtMontoCuotaCondominal = new JTextField();
         panelCuotasCondominales.add(txtMontoCuotaCondominal);
 
+        // Inicializar el botón btnRegistrarCuotaCondominal
         btnRegistrarCuotaCondominal = new JButton("Registrar Cuota Condominal");
-        panelCuotasCondominales.add(btnRegistrarCuotaCondominal);
-
-        btnActualizarCuotaCondominal = new JButton("Actualizar Cuota");
-        panelCuotasCondominales.add(btnActualizarCuotaCondominal);
-
-        btnEliminarCuotaCondominal = new JButton("Eliminar Cuota");
-        panelCuotasCondominales.add(btnEliminarCuotaCondominal);
+        panelCuotasCondominales.add(btnRegistrarCuotaCondominal); // Asegúrate de que esté inicializado antes de agregar el ActionListener
 
         // ActionListener para el botón Registrar Cuota Condominal
         btnRegistrarCuotaCondominal.addActionListener(new ActionListener() {
@@ -371,13 +296,8 @@ public class VentanaPrincipal extends JFrame {
                     // Obtener los valores de los campos de texto
                     int idCuota = Integer.parseInt(txtIdCuotaCondominal.getText());
                     int idFilial = Integer.parseInt(txtIdFilialCuotaCondominal.getText());
-                    String fechaPago = txtFechaPagoCuotaCondominal.getText();
+                    String fechaPago = txtFechaPagoCuotaCondominal.getText(); // Asegúrate de que este campo tenga un formato de fecha válido
                     double monto = Double.parseDouble(txtMontoCuotaCondominal.getText());
-
-                    // Convertir la fecha de String a java.sql.Date
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                    java.util.Date parsedDate = sdf.parse(fechaPago);
-                    java.sql.Date sqlFechaPago = new java.sql.Date(parsedDate.getTime());
 
                     // Preparar la declaración SQL
                     String sql = "INSERT INTO CUOTAS_CONDOMINALES (ID_CUOTA, ID_FILIAL, FECHA_PAGO, MONTO) VALUES (?, ?, ?, ?)";
@@ -386,7 +306,7 @@ public class VentanaPrincipal extends JFrame {
                     // Establecer los parámetros de la declaración SQL
                     pst.setInt(1, idCuota);
                     pst.setInt(2, idFilial);
-                    pst.setDate(3, sqlFechaPago); // Usar java.sql.Date
+                    pst.setString(3, fechaPago);
                     pst.setDouble(4, monto);
 
                     // Ejecutar la declaración SQL
@@ -398,88 +318,12 @@ public class VentanaPrincipal extends JFrame {
                 } catch (SQLException ex) {
                     ex.printStackTrace();
                     JOptionPane.showMessageDialog(null, "Error al registrar cuota condominal");
-                } catch (ParseException ex) {
-                    ex.printStackTrace();
-                    JOptionPane.showMessageDialog(null, "Error al parsear la fecha");
                 }
             }
         });
 
-        btnActualizarCuotaCondominal.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    // Obtener los nuevos valores de los campos de texto
-                    int idCuota = Integer.parseInt(txtIdCuotaCondominal.getText());
-                    int idFilial = Integer.parseInt(txtIdFilialCuotaCondominal.getText());
-                    String fechaPago = txtFechaPagoCuotaCondominal.getText();
-                    double monto = Double.parseDouble(txtMontoCuotaCondominal.getText());
-
-                    // Convertir la fecha de String a java.sql.Date
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                    java.util.Date parsedDate = sdf.parse(fechaPago);
-                    java.sql.Date sqlFechaPago = new java.sql.Date(parsedDate.getTime());
-
-                    // Preparar la declaración SQL de actualización
-                    String sql = "UPDATE CUOTAS_CONDOMINALES SET ID_FILIAL = ?, FECHA_PAGO = ?, MONTO = ? WHERE ID_CUOTA = ?";
-                    pst = con.prepareStatement(sql);
-
-                    // Establecer los parámetros de la declaración SQL
-                    pst.setInt(1, idFilial);
-                    pst.setDate(2, sqlFechaPago);
-                    pst.setDouble(3, monto);
-                    pst.setInt(4, idCuota);
-
-                    // Ejecutar la declaración SQL
-                    int rowsAffected = pst.executeUpdate();
-
-                    // Verificar si se actualizó correctamente
-                    if (rowsAffected > 0) {
-                        JOptionPane.showMessageDialog(null, "Registro de cuota condominal actualizado exitosamente");
-                    } else {
-                        JOptionPane.showMessageDialog(null, "No se encontró la cuota con ID " + idCuota);
-                    }
-
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                    JOptionPane.showMessageDialog(null, "Error al actualizar cuota condominal");
-                } catch (ParseException ex) {
-                    ex.printStackTrace();
-                    JOptionPane.showMessageDialog(null, "Error al parsear la fecha");
-                }
-            }
-        });
-
-        btnEliminarCuotaCondominal.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    // Obtener el ID de cuota a eliminar
-                    int idCuota = Integer.parseInt(txtIdCuotaCondominal.getText());
-
-                    // Preparar la declaración SQL de eliminación
-                    String sql = "DELETE FROM CUOTAS_CONDOMINALES WHERE ID_CUOTA = ?";
-                    pst = con.prepareStatement(sql);
-
-                    // Establecer el parámetro de la declaración SQL
-                    pst.setInt(1, idCuota);
-
-                    // Ejecutar la declaración SQL
-                    int rowsAffected = pst.executeUpdate();
-
-                    // Verificar si se eliminó correctamente
-                    if (rowsAffected > 0) {
-                        JOptionPane.showMessageDialog(null, "Registro de cuota condominal eliminado exitosamente");
-                    } else {
-                        JOptionPane.showMessageDialog(null, "No se encontró la cuota con ID " + idCuota);
-                    }
-
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                    JOptionPane.showMessageDialog(null, "Error al eliminar cuota condominal");
-                }
-            }
-        });
+        btnRegistrarCuotaCondominal = new JButton("Registrar Cuota Condominal");
+        panelCuotasCondominales.add(btnRegistrarCuotaCondominal);
 
         // Pestaña para SP_ACCESOS
         JPanel panelAccesos = new JPanel(new GridLayout(0, 2));
@@ -504,106 +348,36 @@ public class VentanaPrincipal extends JFrame {
         btnRegistrarAcceso = new JButton("Registrar Acceso");
         panelAccesos.add(btnRegistrarAcceso);
 
-        btnActualizarAcceso = new JButton("Actualizar Acceso");
-        panelAccesos.add(btnActualizarAcceso);
-
-        btnEliminarAcceso = new JButton("Eliminar Acceso");
-        panelAccesos.add(btnEliminarAcceso);
-
+// ActionListener para el botón Registrar Acceso
         btnRegistrarAcceso.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    // Obtener valores de los campos de texto
+                    // Obtener los valores de los campos de texto
                     int idAcceso = Integer.parseInt(txtIdAcceso.getText());
                     int idFilial = Integer.parseInt(txtIdFilialAcceso.getText());
-                    String fechaIngreso = txtFechaIngresoAcceso.getText(); // asumiendo formato 'yyyy-MM-dd'
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                    java.util.Date parsedDate = sdf.parse(fechaIngreso);
-                    java.sql.Date sqlFechaIngreso = new java.sql.Date(parsedDate.getTime());
-                    String horaIngreso = txtHoraIngresoAcceso.getText(); // asumiendo formato 'HH:mm'
+                    String fechaIngreso = txtFechaIngresoAcceso.getText(); // Asegúrate de que este campo tenga un formato de fecha válido
+                    String horaIngreso = txtHoraIngresoAcceso.getText(); // Asegúrate de que este campo tenga un formato de hora válido
 
-                    // Llamar al procedimiento almacenado
-                    CallableStatement cstmt = con.prepareCall("{ call SP_ACCESOS(?, ?, ?, ?, ?) }");
-                    cstmt.setString(1, "INSERT");
-                    cstmt.setInt(2, idAcceso);
-                    cstmt.setInt(3, idFilial);
-                    cstmt.setDate(4, sqlFechaIngreso);
-                    cstmt.setString(5, horaIngreso);
+                    // Preparar la declaración SQL
+                    String sql = "INSERT INTO ACCESOS (ID_ACCESO, ID_FILIAL, FECHA_INGRESO, HORA_INGRESO) VALUES (?, ?, ?, ?)";
+                    pst = con.prepareStatement(sql);
 
-                    cstmt.execute();
+                    // Establecer los parámetros de la declaración SQL
+                    pst.setInt(1, idAcceso);
+                    pst.setInt(2, idFilial);
+                    pst.setString(3, fechaIngreso);
+                    pst.setString(4, horaIngreso);
 
-                    JOptionPane.showMessageDialog(null, "Acceso registrado correctamente");
+                    // Ejecutar la declaración SQL
+                    pst.executeUpdate();
+
+                    // Notificar al usuario que el registro se ha completado
+                    JOptionPane.showMessageDialog(null, "Registro de acceso exitoso");
 
                 } catch (SQLException ex) {
                     ex.printStackTrace();
                     JOptionPane.showMessageDialog(null, "Error al registrar acceso");
-                } catch (ParseException ex) {
-                    ex.printStackTrace();
-                    JOptionPane.showMessageDialog(null, "Error al parsear la fecha");
-                }
-            }
-        });
-
-// Listener para el botón Actualizar Acceso
-        btnActualizarAcceso.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    // Obtener valores de los campos de texto
-                    int idAcceso = Integer.parseInt(txtIdAcceso.getText());
-                    int idFilial = Integer.parseInt(txtIdFilialAcceso.getText());
-                    String fechaIngreso = txtFechaIngresoAcceso.getText(); // asumiendo formato 'yyyy-MM-dd'
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                    java.util.Date parsedDate = sdf.parse(fechaIngreso);
-                    java.sql.Date sqlFechaIngreso = new java.sql.Date(parsedDate.getTime());
-                    String horaIngreso = txtHoraIngresoAcceso.getText(); // asumiendo formato 'HH:mm'
-
-                    // Llamar al procedimiento almacenado
-                    CallableStatement cstmt = con.prepareCall("{ call SP_ACCESOS(?, ?, ?, ?, ?) }");
-                    cstmt.setString(1, "UPDATE");
-                    cstmt.setInt(2, idAcceso);
-                    cstmt.setInt(3, idFilial);
-                    cstmt.setDate(4, sqlFechaIngreso);
-                    cstmt.setString(5, horaIngreso);
-
-                    cstmt.execute();
-
-                    JOptionPane.showMessageDialog(null, "Acceso actualizado correctamente");
-
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                    JOptionPane.showMessageDialog(null, "Error al actualizar acceso");
-                } catch (ParseException ex) {
-                    ex.printStackTrace();
-                    JOptionPane.showMessageDialog(null, "Error al parsear la fecha");
-                }
-            }
-        });
-
-// Listener para el botón Eliminar Acceso
-        btnEliminarAcceso.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    // Obtener el ID de acceso a eliminar
-                    int idAcceso = Integer.parseInt(txtIdAcceso.getText());
-
-                    // Llamar al procedimiento almacenado
-                    CallableStatement cstmt = con.prepareCall("{ call SP_ACCESOS(?, ?, ?, ?, ?) }");
-                    cstmt.setString(1, "DELETE");
-                    cstmt.setInt(2, idAcceso);
-                    cstmt.setNull(3, Types.INTEGER); // P_ID_FILIAL, no se necesita para DELETE
-                    cstmt.setNull(4, Types.DATE);    // P_FECHA_INGRESO, no se necesita para DELETE
-                    cstmt.setNull(5, Types.VARCHAR); // P_HORA_INGRESO, no se necesita para DELETE
-
-                    cstmt.execute();
-
-                    JOptionPane.showMessageDialog(null, "Acceso eliminado correctamente");
-
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                    JOptionPane.showMessageDialog(null, "Error al eliminar acceso");
                 }
             }
         });
@@ -631,110 +405,40 @@ public class VentanaPrincipal extends JFrame {
         btnRegistrarCuotaExtraordinaria = new JButton("Registrar Cuota Extraordinaria");
         panelCuotasExtraordinarias.add(btnRegistrarCuotaExtraordinaria);
 
-        btnActualizarCuotaExtraordinaria = new JButton("Actualizar Cuota Extraordinaria");
-        panelCuotasExtraordinarias.add(btnActualizarCuotaExtraordinaria);
 
-        btnEliminarCuotaExtraordinaria = new JButton("Eliminar Cuota Extraordinaria");
-        panelCuotasExtraordinarias.add(btnEliminarCuotaExtraordinaria);
-
+        // ActionListener para el botón Registrar Cuota Extraordinaria
         btnRegistrarCuotaExtraordinaria.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    // Obtener valores de los campos de texto
+                    // Obtener los valores de los campos de texto
                     int idCuotaExtra = Integer.parseInt(txtIdCuotaExtraordinaria.getText());
                     int idFilial = Integer.parseInt(txtIdFilialCuotaExtraordinaria.getText());
-                    String fechaPago = txtFechaPagoCuotaExtraordinaria.getText(); // asumiendo formato 'yyyy-MM-dd'
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                    java.util.Date parsedDate = sdf.parse(fechaPago);
-                    java.sql.Date sqlFechaPago = new java.sql.Date(parsedDate.getTime());
+                    String fechaPago = txtFechaPagoCuotaExtraordinaria.getText(); // Asegúrate de que este campo tenga un formato de fecha válido
                     double monto = Double.parseDouble(txtMontoCuotaExtraordinaria.getText());
 
-                    // Llamar al procedimiento almacenado
-                    CallableStatement cstmt = con.prepareCall("{ call SP_CUOTAS_EXTRAORDINARIAS(?, ?, ?, ?, ?) }");
-                    cstmt.setString(1, "INSERT");
-                    cstmt.setInt(2, idCuotaExtra);
-                    cstmt.setInt(3, idFilial);
-                    cstmt.setDate(4, sqlFechaPago);
-                    cstmt.setDouble(5, monto);
+                    // Preparar la declaración SQL
+                    String sql = "INSERT INTO CUOTAS_EXTRAORDINARIAS (ID_CUOTA_EXTRA, ID_FILIAL, FECHA_PAGO, MONTO) VALUES (?, ?, ?, ?)";
+                    pst = con.prepareStatement(sql);
 
-                    cstmt.execute();
+                    // Establecer los parámetros de la declaración SQL
+                    pst.setInt(1, idCuotaExtra);
+                    pst.setInt(2, idFilial);
+                    pst.setString(3, fechaPago);
+                    pst.setDouble(4, monto);
 
-                    JOptionPane.showMessageDialog(null, "Cuota extraordinaria registrada correctamente");
+                    // Ejecutar la declaración SQL
+                    pst.executeUpdate();
+
+                    // Notificar al usuario que el registro se ha completado
+                    JOptionPane.showMessageDialog(null, "Registro de cuota extraordinaria exitoso");
 
                 } catch (SQLException ex) {
                     ex.printStackTrace();
                     JOptionPane.showMessageDialog(null, "Error al registrar cuota extraordinaria");
-                } catch (ParseException ex) {
-                    ex.printStackTrace();
-                    JOptionPane.showMessageDialog(null, "Error al parsear la fecha");
                 }
             }
         });
-
-// Listener para el botón Actualizar Cuota Extraordinaria
-        btnActualizarCuotaExtraordinaria.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    // Obtener valores de los campos de texto
-                    int idCuotaExtra = Integer.parseInt(txtIdCuotaExtraordinaria.getText());
-                    int idFilial = Integer.parseInt(txtIdFilialCuotaExtraordinaria.getText());
-                    String fechaPago = txtFechaPagoCuotaExtraordinaria.getText(); // asumiendo formato 'yyyy-MM-dd'
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                    java.util.Date parsedDate = sdf.parse(fechaPago);
-                    java.sql.Date sqlFechaPago = new java.sql.Date(parsedDate.getTime());
-                    double monto = Double.parseDouble(txtMontoCuotaExtraordinaria.getText());
-
-                    // Llamar al procedimiento almacenado
-                    CallableStatement cstmt = con.prepareCall("{ call SP_CUOTAS_EXTRAORDINARIAS(?, ?, ?, ?, ?) }");
-                    cstmt.setString(1, "UPDATE");
-                    cstmt.setInt(2, idCuotaExtra);
-                    cstmt.setInt(3, idFilial);
-                    cstmt.setDate(4, sqlFechaPago);
-                    cstmt.setDouble(5, monto);
-
-                    cstmt.execute();
-
-                    JOptionPane.showMessageDialog(null, "Cuota extraordinaria actualizada correctamente");
-
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                    JOptionPane.showMessageDialog(null, "Error al actualizar cuota extraordinaria");
-                } catch (ParseException ex) {
-                    ex.printStackTrace();
-                    JOptionPane.showMessageDialog(null, "Error al parsear la fecha");
-                }
-            }
-        });
-
-// Listener para el botón Eliminar Cuota Extraordinaria
-        btnEliminarCuotaExtraordinaria.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    // Obtener el ID de cuota extraordinaria a eliminar
-                    int idCuotaExtra = Integer.parseInt(txtIdCuotaExtraordinaria.getText());
-
-                    // Llamar al procedimiento almacenado
-                    CallableStatement cstmt = con.prepareCall("{ call SP_CUOTAS_EXTRAORDINARIAS(?, ?, ?, ?, ?) }");
-                    cstmt.setString(1, "DELETE");
-                    cstmt.setInt(2, idCuotaExtra);
-                    cstmt.setNull(3, Types.INTEGER); // P_ID_FILIAL, no se necesita para DELETE
-                    cstmt.setNull(4, Types.DATE);    // P_FECHA_PAGO, no se necesita para DELETE
-                    cstmt.setNull(5, Types.DOUBLE);  // P_MONTO, no se necesita para DELETE
-
-                    cstmt.execute();
-
-                    JOptionPane.showMessageDialog(null, "Cuota extraordinaria eliminada correctamente");
-
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                    JOptionPane.showMessageDialog(null, "Error al eliminar cuota extraordinaria");
-                }
-            }
-        });
-
     }
 
 
