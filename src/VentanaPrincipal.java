@@ -7,6 +7,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import oracle.jdbc.OracleTypes;
+import java.util.Vector;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
@@ -14,6 +16,7 @@ import java.time.format.DateTimeParseException;
 public class VentanaPrincipal extends JFrame {
     private JTabbedPane tabbedPane1;
     private JPanel panel1;
+    private JTable table;
 
     private JTextField txtIdDueno;
     private JTextField txtNombreDueno;
@@ -499,13 +502,14 @@ public class VentanaPrincipal extends JFrame {
 
                 } catch (SQLException ex) {
                     ex.printStackTrace();
-                    JOptionPane.showMessageDialog(null, "Error al registrar acceso");
+                    JOptionPane.showMessageDialog(null, "Error al registrar acceso: " + ex.getMessage());
                 } catch (ParseException ex) {
                     ex.printStackTrace();
-                    JOptionPane.showMessageDialog(null, "Error al parsear la fecha");
+                    JOptionPane.showMessageDialog(null, "Error al parsear la fecha: " + ex.getMessage());
                 }
             }
         });
+
 
 // Listener para el botón Actualizar Acceso
         btnActualizarAcceso.addActionListener(new ActionListener() {
@@ -696,33 +700,35 @@ public class VentanaPrincipal extends JFrame {
                 }
             }
         });
+//-------------Mostrar listado-----------------
 
-        // Pestaña para SP_LISTAR_DUEÑOS_FILIALES
         JPanel panelListado = new JPanel(new GridLayout(0, 2));
         tabbedPane1.addTab("Listado", panelListado);
-
-// Componentes para Listado
-
+        table = new JTable();
+        JScrollPane scrollPane = new JScrollPane(table);
+        panelListado.add(scrollPane);
 
         JButton btnConsultarDueñosFiliales = new JButton("Consultar Listado de Clientes y Filiales");
         panelListado.add(btnConsultarDueñosFiliales);
+
+        JButton btnActualizarTabla = new JButton("Actualizar Tabla");
+        panelListado.add(btnActualizarTabla);
 
         btnConsultarDueñosFiliales.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    CallableStatement cst = con.prepareCall("{call SP_LISTAR_DUEÑOS_FILIALES}");
+                    CallableStatement cst = con.prepareCall("{call SP_LISTAR_DUEÑOS_FILIALES(?)}");
+
+                    cst.registerOutParameter(1, OracleTypes.CURSOR);
                     cst.execute();
 
-                    // Verifica si el procedimiento almacenado retornó un ResultSet
-                    ResultSet rs = cst.getResultSet();
+                    ResultSet rs = (ResultSet) cst.getObject(1);
 
-                    if (rs == null) {
-                        // No se encontraron resultados
+                    if (!rs.isBeforeFirst()) {
                         JOptionPane.showMessageDialog(null, "No se encontraron resultados para listar dueños y filiales.");
-                        return; // Salir del método actionPerformed
+                        return;
                     }
-
                     DefaultTableModel model = new DefaultTableModel();
                     model.addColumn("ID_DUEÑO");
                     model.addColumn("NOMBRE");
@@ -731,7 +737,7 @@ public class VentanaPrincipal extends JFrame {
                     model.addColumn("NUMERO_FILIAL");
                     model.addColumn("UBICACIÓN");
 
-                    // Llena el modelo con los datos del ResultSet
+                    // Llenar el modelo con los datos del ResultSet
                     while (rs.next()) {
                         Object[] row = new Object[6];
                         row[0] = rs.getInt("ID_DUEÑO");
@@ -743,8 +749,8 @@ public class VentanaPrincipal extends JFrame {
                         model.addRow(row);
                     }
 
-                    // Muestra la tabla en un JOptionPane
-                    JOptionPane.showMessageDialog(null, new JScrollPane(new JTable(model)), "Listado de Dueños y Filiales", JOptionPane.PLAIN_MESSAGE);
+                    // Establecer el modelo en la tabla
+                    table.setModel(model);
 
                 } catch (SQLException ex) {
                     ex.printStackTrace();
@@ -758,8 +764,98 @@ public class VentanaPrincipal extends JFrame {
                 }
             }
         });
-    }
+        btnActualizarTabla.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
 
+                    CallableStatement cst = con.prepareCall("{call SP_LISTAR_DUEÑOS_FILIALES(?)}");
+
+                    cst.registerOutParameter(1, OracleTypes.CURSOR);
+
+                    cst.execute();
+
+                    ResultSet rs = (ResultSet) cst.getObject(1);
+
+                    DefaultTableModel model = (DefaultTableModel) table.getModel();
+                    model.setRowCount(0); // Elimina todas las filas actuales
+
+
+                    while (rs.next()) {
+                        Object[] row = new Object[6];
+                        row[0] = rs.getInt("ID_DUEÑO");
+                        row[1] = rs.getString("NOMBRE");
+                        row[2] = rs.getString("APELLIDO");
+                        row[3] = rs.getInt("ID_FILIAL");
+                        row[4] = rs.getInt("NUMERO_FILIAL");
+                        row[5] = rs.getString("UBICACIÓN");
+                        model.addRow(row);
+                    }
+
+                    model.fireTableDataChanged();
+
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "Error al actualizar la tabla: " + ex.getMessage());
+                } catch (NullPointerException ex) {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "NullPointerException: " + ex.getMessage());
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "Error inesperado: " + ex.getMessage());
+                }
+            }
+        });
+
+        //-------------Mostrar AUDITORIA-----------------
+        JPanel panelAuditoria = new JPanel(new GridLayout(0, 2));
+        tabbedPane1.addTab("Auditoria", panelAuditoria);
+
+        JButton mostrarAuditoriaButton = new JButton("Mostrar Auditoría");
+        panelAuditoria.add(mostrarAuditoriaButton, BorderLayout.NORTH);
+
+        mostrarAuditoriaButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                try {
+                    String query = "SELECT * FROM AUDITORIA_CUOTAS";
+                    pst = con.prepareStatement(query);
+                    ResultSet rs = pst.executeQuery();
+
+                    ResultSetMetaData rsmd = rs.getMetaData();
+                    int columnCount = rsmd.getColumnCount();
+
+
+                    Vector<String> columnNames = new Vector<>();
+                    for (int i = 1; i <= columnCount; i++) {
+                        columnNames.add(rsmd.getColumnName(i));
+                    }
+
+                    Vector<Vector<Object>> data = new Vector<>();
+                    while (rs.next()) {
+                        Vector<Object> row = new Vector<>();
+                        for (int i = 1; i <= columnCount; i++) {
+                            row.add(rs.getObject(i));
+                        }
+                        data.add(row);
+                    }
+
+                    DefaultTableModel model = new DefaultTableModel(data, columnNames);
+                    JTable tableAuditoria = new JTable(model);
+
+                    JScrollPane scrollPane = new JScrollPane(tableAuditoria);
+
+                    JOptionPane.showMessageDialog(null, scrollPane, "Tabla de Auditoría de Cuotas", JOptionPane.INFORMATION_MESSAGE);
+
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+
+
+    }
 
 
     Connection con;
