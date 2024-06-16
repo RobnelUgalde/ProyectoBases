@@ -697,15 +697,15 @@ public class VentanaPrincipal extends JFrame {
             }
         });
 
-        // Pestaña para SP_AUDITORIA
-        JPanel panelAuditoria = new JPanel(new GridLayout(0, 2));
-        tabbedPane1.addTab("Auditoria", panelAuditoria);
+        // Pestaña para SP_LISTAR_DUEÑOS_FILIALES
+        JPanel panelListado = new JPanel(new GridLayout(0, 2));
+        tabbedPane1.addTab("Listado", panelListado);
 
-// Componentes para Auditoria
+// Componentes para Listado
 
 
-        JButton btnConsultarDueñosFiliales = new JButton("Consultar Auditoria");
-        panelAuditoria.add(btnConsultarDueñosFiliales);
+        JButton btnConsultarDueñosFiliales = new JButton("Consultar Listado de Clientes y Filiales");
+        panelListado.add(btnConsultarDueñosFiliales);
 
         btnConsultarDueñosFiliales.addActionListener(new ActionListener() {
             @Override
