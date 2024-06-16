@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import javax.swing.JTable;
+import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import oracle.jdbc.OracleTypes;
 import java.util.Vector;
@@ -63,7 +64,7 @@ public class VentanaPrincipal extends JFrame {
         JFrame frame = new JFrame("Sistema de Control de Condominios");
         frame.setContentPane(new VentanaPrincipal().panel1);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setMinimumSize(new Dimension(650, 500));
+        frame.setMaximumSize(new Dimension(100, 150));
         frame.setLocationRelativeTo(null);
         frame.pack();
         frame.setVisible(true);
@@ -75,40 +76,45 @@ public class VentanaPrincipal extends JFrame {
     }
 
     private void initComponents() {
+
         panel1 = new JPanel();
         panel1.setLayout(new BorderLayout());
+
 
         tabbedPane1 = new JTabbedPane();
         panel1.add(tabbedPane1, BorderLayout.CENTER);
 
-
         // Pestaña para SP_DUEÑOS
-        JPanel panelDuenos = new JPanel(new GridLayout(0, 2));
+        JPanel panelDuenos = new JPanel(new GridLayout());
         tabbedPane1.addTab("Dueños", panelDuenos);
 
+        panelDuenos.setBorder(new EmptyBorder(10, 10, 10, 10));
+
+        panelDuenos.setLayout(new FlowLayout(FlowLayout.LEFT,20, 10));
         panelDuenos.add(new JLabel("ID Dueño:"));
-        txtIdDueno = new JTextField();
+        txtIdDueno = new JTextField(50);
         panelDuenos.add(txtIdDueno);
 
+
         panelDuenos.add(new JLabel("Nombre:"));
-        txtNombreDueno = new JTextField();
+        txtNombreDueno = new JTextField(50);
         panelDuenos.add(txtNombreDueno);
 
         panelDuenos.add(new JLabel("Apellido:"));
-        txtApellidoDueno = new JTextField();
+        txtApellidoDueno = new JTextField(50);
         panelDuenos.add(txtApellidoDueno);
 
         panelDuenos.add(new JLabel("Dirección:"));
-        txtDireccionDueno = new JTextField();
+        txtDireccionDueno = new JTextField(50);
         panelDuenos.add(txtDireccionDueno);
 
         panelDuenos.add(new JLabel("Teléfono:"));
-        txtTelefonoDueno = new JTextField();
+        txtTelefonoDueno = new JTextField(50);
         panelDuenos.add(txtTelefonoDueno);
 
+        panelDuenos.setLayout(new FlowLayout(FlowLayout.LEFT,20, 10));
         btnRegistrarDueno = new JButton("Registrar Dueño");
         panelDuenos.add(btnRegistrarDueno);
-
 
         btnActualizarDueno = new JButton("Actualizar Dueño");
         panelDuenos.add(btnActualizarDueno); // Asegúrate de que esté inicializado antes de agregar el ActionListener
@@ -206,20 +212,24 @@ public class VentanaPrincipal extends JFrame {
         JPanel panelFiliales = new JPanel(new GridLayout(0, 2));
         tabbedPane1.addTab("Filiales", panelFiliales);
 
+        panelFiliales.setBorder(new EmptyBorder(10, 10, 10, 10));
+
+        panelFiliales.setLayout(new FlowLayout(FlowLayout.LEFT,20, 10));
+
         panelFiliales.add(new JLabel("ID Filial:"));
-        txtIdFilial = new JTextField();
+        txtIdFilial = new JTextField(50);
         panelFiliales.add(txtIdFilial);
 
         panelFiliales.add(new JLabel("ID Dueño:"));
-        txtIdDuenoFilial = new JTextField();
+        txtIdDuenoFilial = new JTextField(50);
         panelFiliales.add(txtIdDuenoFilial);
 
         panelFiliales.add(new JLabel("Número Filial:"));
-        txtNumeroFilial = new JTextField();
+        txtNumeroFilial = new JTextField(50);
         panelFiliales.add(txtNumeroFilial);
 
         panelFiliales.add(new JLabel("Ubicación:"));
-        txtUbicacionFilial = new JTextField();
+        txtUbicacionFilial = new JTextField(50);
         panelFiliales.add(txtUbicacionFilial);
 
         btnRegistrarFilial = new JButton("Registrar Filial");
@@ -314,20 +324,23 @@ public class VentanaPrincipal extends JFrame {
         JPanel panelCuotasCondominales = new JPanel(new GridLayout(0, 2));
         tabbedPane1.addTab("Cuotas Condominales", panelCuotasCondominales);
 
+        panelCuotasCondominales.setBorder(new EmptyBorder(10, 10, 10, 10));
+        panelCuotasCondominales.setLayout(new FlowLayout(FlowLayout.LEFT,20, 10));
+
         panelCuotasCondominales.add(new JLabel("ID Cuota:"));
-        txtIdCuotaCondominal = new JTextField();
+        txtIdCuotaCondominal = new JTextField(50);
         panelCuotasCondominales.add(txtIdCuotaCondominal);
 
         panelCuotasCondominales.add(new JLabel("ID Filial:"));
-        txtIdFilialCuotaCondominal = new JTextField();
+        txtIdFilialCuotaCondominal = new JTextField(50);
         panelCuotasCondominales.add(txtIdFilialCuotaCondominal);
 
         panelCuotasCondominales.add(new JLabel("Fecha Pago:"));
-        txtFechaPagoCuotaCondominal = new JTextField();
+        txtFechaPagoCuotaCondominal = new JTextField(50);
         panelCuotasCondominales.add(txtFechaPagoCuotaCondominal);
 
         panelCuotasCondominales.add(new JLabel("Monto:"));
-        txtMontoCuotaCondominal = new JTextField();
+        txtMontoCuotaCondominal = new JTextField(50);
         panelCuotasCondominales.add(txtMontoCuotaCondominal);
 
         btnRegistrarCuotaCondominal = new JButton("Registrar Cuota Condominal");
@@ -450,20 +463,23 @@ public class VentanaPrincipal extends JFrame {
         JPanel panelAccesos = new JPanel(new GridLayout(0, 2));
         tabbedPane1.addTab("Accesos", panelAccesos);
 
+        panelAccesos.setBorder(new EmptyBorder(10, 10, 10, 10));
+        panelAccesos.setLayout(new FlowLayout(FlowLayout.LEFT,20, 10));
+
         panelAccesos.add(new JLabel("ID Acceso:"));
-        txtIdAcceso = new JTextField();
+        txtIdAcceso = new JTextField(50);
         panelAccesos.add(txtIdAcceso);
 
         panelAccesos.add(new JLabel("ID Filial:"));
-        txtIdFilialAcceso = new JTextField();
+        txtIdFilialAcceso = new JTextField(50);
         panelAccesos.add(txtIdFilialAcceso);
 
         panelAccesos.add(new JLabel("Fecha Ingreso:"));
-        txtFechaIngresoAcceso = new JTextField();
+        txtFechaIngresoAcceso = new JTextField(50);
         panelAccesos.add(txtFechaIngresoAcceso);
 
         panelAccesos.add(new JLabel("Hora Ingreso:"));
-        txtHoraIngresoAcceso = new JTextField();
+        txtHoraIngresoAcceso = new JTextField(50);
         panelAccesos.add(txtHoraIngresoAcceso);
 
         btnRegistrarAcceso = new JButton("Registrar Acceso");
@@ -578,20 +594,23 @@ public class VentanaPrincipal extends JFrame {
         JPanel panelCuotasExtraordinarias = new JPanel(new GridLayout(0, 2));
         tabbedPane1.addTab("Cuotas Extraordinarias", panelCuotasExtraordinarias);
 
+        panelCuotasExtraordinarias.setBorder(new EmptyBorder(10, 10, 10, 10));
+        panelCuotasExtraordinarias.setLayout(new FlowLayout(FlowLayout.LEFT,20, 10));
+
         panelCuotasExtraordinarias.add(new JLabel("ID Cuota Extra:"));
-        txtIdCuotaExtraordinaria = new JTextField();
+        txtIdCuotaExtraordinaria = new JTextField(50);
         panelCuotasExtraordinarias.add(txtIdCuotaExtraordinaria);
 
         panelCuotasExtraordinarias.add(new JLabel("ID Filial:"));
-        txtIdFilialCuotaExtraordinaria = new JTextField();
+        txtIdFilialCuotaExtraordinaria = new JTextField(50);
         panelCuotasExtraordinarias.add(txtIdFilialCuotaExtraordinaria);
 
         panelCuotasExtraordinarias.add(new JLabel("Fecha Pago:"));
-        txtFechaPagoCuotaExtraordinaria = new JTextField();
+        txtFechaPagoCuotaExtraordinaria = new JTextField(50);
         panelCuotasExtraordinarias.add(txtFechaPagoCuotaExtraordinaria);
 
         panelCuotasExtraordinarias.add(new JLabel("Monto:"));
-        txtMontoCuotaExtraordinaria = new JTextField();
+        txtMontoCuotaExtraordinaria = new JTextField(50);
         panelCuotasExtraordinarias.add(txtMontoCuotaExtraordinaria);
 
         btnRegistrarCuotaExtraordinaria = new JButton("Registrar Cuota Extraordinaria");
@@ -707,6 +726,7 @@ public class VentanaPrincipal extends JFrame {
         table = new JTable();
         JScrollPane scrollPane = new JScrollPane(table);
         panelListado.add(scrollPane);
+        panelListado.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 20));
 
         JButton btnConsultarDueñosFiliales = new JButton("Consultar Listado de Clientes y Filiales");
         panelListado.add(btnConsultarDueñosFiliales);
@@ -811,6 +831,7 @@ public class VentanaPrincipal extends JFrame {
         JPanel panelAuditoria = new JPanel(new GridLayout(0, 2));
         tabbedPane1.addTab("Auditoria", panelAuditoria);
 
+        panelAuditoria.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 20));
         JButton mostrarAuditoriaButton = new JButton("Mostrar Auditoría");
         panelAuditoria.add(mostrarAuditoriaButton, BorderLayout.NORTH);
 
@@ -846,6 +867,7 @@ public class VentanaPrincipal extends JFrame {
 
                     JScrollPane scrollPane = new JScrollPane(tableAuditoria);
 
+                    scrollPane.setPreferredSize(new Dimension(800, 600));
                     JOptionPane.showMessageDialog(null, scrollPane, "Tabla de Auditoría de Cuotas", JOptionPane.INFORMATION_MESSAGE);
 
                 } catch (SQLException ex) {
@@ -853,11 +875,7 @@ public class VentanaPrincipal extends JFrame {
                 }
             }
         });
-
-
     }
-
-
     Connection con;
     PreparedStatement pst;
     public void Conexion() {
