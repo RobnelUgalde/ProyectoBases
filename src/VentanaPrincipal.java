@@ -5,6 +5,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
@@ -695,6 +697,67 @@ public class VentanaPrincipal extends JFrame {
             }
         });
 
+        // Pestaña para SP_AUDITORIA
+        JPanel panelAuditoria = new JPanel(new GridLayout(0, 2));
+        tabbedPane1.addTab("Auditoria", panelAuditoria);
+
+// Componentes para Auditoria
+
+
+        JButton btnConsultarDueñosFiliales = new JButton("Consultar Auditoria");
+        panelAuditoria.add(btnConsultarDueñosFiliales);
+
+        btnConsultarDueñosFiliales.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    CallableStatement cst = con.prepareCall("{call SP_LISTAR_DUEÑOS_FILIALES}");
+                    cst.execute();
+
+                    // Verifica si el procedimiento almacenado retornó un ResultSet
+                    ResultSet rs = cst.getResultSet();
+
+                    if (rs == null) {
+                        // No se encontraron resultados
+                        JOptionPane.showMessageDialog(null, "No se encontraron resultados para listar dueños y filiales.");
+                        return; // Salir del método actionPerformed
+                    }
+
+                    DefaultTableModel model = new DefaultTableModel();
+                    model.addColumn("ID_DUEÑO");
+                    model.addColumn("NOMBRE");
+                    model.addColumn("APELLIDO");
+                    model.addColumn("ID_FILIAL");
+                    model.addColumn("NUMERO_FILIAL");
+                    model.addColumn("UBICACIÓN");
+
+                    // Llena el modelo con los datos del ResultSet
+                    while (rs.next()) {
+                        Object[] row = new Object[6];
+                        row[0] = rs.getInt("ID_DUEÑO");
+                        row[1] = rs.getString("NOMBRE");
+                        row[2] = rs.getString("APELLIDO");
+                        row[3] = rs.getInt("ID_FILIAL");
+                        row[4] = rs.getInt("NUMERO_FILIAL");
+                        row[5] = rs.getString("UBICACIÓN");
+                        model.addRow(row);
+                    }
+
+                    // Muestra la tabla en un JOptionPane
+                    JOptionPane.showMessageDialog(null, new JScrollPane(new JTable(model)), "Listado de Dueños y Filiales", JOptionPane.PLAIN_MESSAGE);
+
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "Error al listar dueños y filiales: " + ex.getMessage());
+                } catch (NullPointerException ex) {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "NullPointerException: " + ex.getMessage());
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "Error inesperado: " + ex.getMessage());
+                }
+            }
+        });
     }
 
 
